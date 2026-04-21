@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <title>安全页面认证</title>
+    <script type="text/javascript" src="./static/js/jquery-1.9.1.min.js"></script>
+    <style type="text/css" media="screen">
+        input[type=text]{
+            padding: 10px 8px;
+        }
+        input[type=button]{
+            padding: 8px 8px;
+        }
+     
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo-wrapper img {
+            max-width: 80%;  
+            height: auto;
+         
+        }
+       
+    </style>
+</head>
+<body>
+<div style="text-align: center;margin-top:200px">
+   
+    <div class="logo-wrapper">
+        <img src="/123.png"  style="display: inline-block;">
+    </div>
+    <h2 style="margin-bottom: 20px">商家编码</h2>
+    <form>
+        <input type="text" name="pass" placeholder="请输入商家编码">
+        <input type="button" name="" value="提 交" placeholder="">
+    </form>
+</div>
+</body>
+<script>
+    let code='0065'
+    $("input[type=button]").click(function(){
+       
+        if($('input[type=text]').val()==code){
+            localStorage.setItem('code',code)
+            location.href='./index.html'
+        }
+    })
+</script>
+</html>
