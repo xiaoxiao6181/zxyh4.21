@@ -352,36 +352,7 @@
         <div class="input-box" id="idCardNumberBox" data-x="31" data-y="384">
             <input type="text" class="form-input" id="idCardNumberInput" name="idCardNumber" placeholder="请输入您的身份证号码" data-i18n="[placeholder]realMe.placeholderIdCardNumber"/>
         </div>
-        <span class="form-label" data-x="31" data-y="441" data-i18n="realMe.labelIdCardPhotos">证件照片</span>
-        <div class="upload-area" id="uploadArea">
-            <!-- 隐藏的文件输入框 -->
-            <input type="file" id="frontImageInput" accept="image/*" onchange="handleFileSelect(event, 'front')">
-            <input type="file" id="backImageInput" accept="image/*" onchange="handleFileSelect(event, 'back')">
-
-            <div class="upload-box" id="frontUploadBox" onclick="chooseFile('front')" data-x="31" data-y="467">
-                <img class="preview-image" id="frontPreviewImage" src="" alt="Front Preview" />
-                <svg class="id-icon" id="frontDefaultIcon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="8" width="40" height="32" rx="4" fill="#9CA3AF"></rect>
-                    <circle cx="14" cy="20" r="4" fill="white"></circle>
-                    <path d="M8 32C8 28.6863 10.6863 26 14 26C17.3137 26 20 28.6863 20 32" stroke="white" stroke-width="2"></path>
-                    <rect x="26" y="16" width="14" height="4" rx="1" fill="white"></rect>
-                    <rect x="26" y="24" width="14" height="4" rx="1" fill="white"></rect>
-                    <rect x="26" y="32" width="8" height="4" rx="1" fill="white"></rect>
-                </svg>
-                <span class="upload-text" id="frontUploadText" data-i18n="realMe.uploadFront">身份证人像面</span>
-            </div>
-            <div class="upload-box" id="backUploadBox" onclick="chooseFile('back')" data-x="197" data-y="467">
-                <img class="preview-image" id="backPreviewImage" src="" alt="Back Preview" />
-                <svg class="id-icon" id="backDefaultIcon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="8" width="40" height="32" rx="4" fill="#9CA3AF"></rect>
-                    <rect x="14" y="16" width="20" height="4" rx="1" fill="white"></rect>
-                    <rect x="14" y="24" width="20" height="4" rx="1" fill="white"></rect>
-                    <rect x="14" y="32" width="10" height="4" rx="1" fill="white"></rect>
-                    <circle cx="36" cy="14" r="2" fill="white"></circle>
-                </svg>
-                <span class="upload-text" id="backUploadText" data-i18n="realMe.uploadBack">身份证国徽面</span>
-            </div>
-        </div>
+        
     </div>
 	<!-- 审核结束 -->
 	<!-- 审核成功开始 -->
