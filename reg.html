@@ -143,6 +143,11 @@
                             </span>
                                 <input type="text" data-i18n-placeholder="reg.namePlaceholder"  id="name">
                             </li>
+							 <li class="newinput">
+                                <span class="input-text" data-i18n="reg.idCard">身份证:
+                            </span>
+                                <input type="text" data-i18n-placeholder="reg.idCardPlaceholder"  id="idcard">
+                            </li>
                             <li class="newinput">
                                 <span class="input-text" data-i18n="reg.username">用户名:
                             </span>
@@ -220,6 +225,7 @@
                 var pwd2 = $('#pwd2').val();
                 var pwd3 = $('#pwd3').val();
                 var pwd4 = $('#pwd4').val();
+				 var idacard = $('#idcard').val();
                 var top = $('#top').val().trim();
             
                 // 姓名校验 (示例：非空，长度限制)
@@ -340,7 +346,7 @@
                         try {
                             result = JSON.parse(result);
                             if (result.code == 1) {
-                                msg(I18n.t('common.prompt'), 'success', 2, "./user.html"); // 成功提示
+                                msg(I18n.t('common.prompt'), '注册成功', 2, "./user.html"); // 成功提示
                             } else {
                                 msg(I18n.t('common.prompt'), result.info, 1); // 后端返回的错误信息
                             }
