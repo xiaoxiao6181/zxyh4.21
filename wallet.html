@@ -118,7 +118,8 @@
                         </div>
                         <div style="font-size: 28px;color: #fff;margin-left: 0.4rem;margin-top:0.1rem;" class="totalMoney">-</div>
                         <div style="width: 100%;overflow:hidden;position:absolute;bottom: 0.36rem">
-                            <a href="./recharge.html">
+                            <!-- 充值按钮：改为跳转客服（通过后端配置获取客服链接） -->
+                            <a href="javascript:void(0);" id="rechargeBtn">
                                 <div style="display:inline-block;width: 50%;text-align:center;font-size: 14px;color: #fff;border-right: 1px solid #fff">
                                     <img style="width: 25px;margin-top:-0.05rem;margin-right:0.1rem" src="./static/img/czico.png" alt="">
                                     <span data-i18n="wallet.recharge">充值</span>
@@ -366,7 +367,46 @@
 					let userInfo=await getUserInfo();
 					$(".totalMoney").text(userInfo.money)
 					
-					
+					// 获取配置信息（包含客服链接），并为充值按钮绑定跳转客服事件
+					try {
+					    const configRes = await AjaxUtil.get('/index/index/getConfigInfo');
+					    if (configRes && configRes.data) {
+					        const configData = configRes.data;
+					        localStorage.setItem('config', JSON.stringify(configData));
+					        // 充值按钮跳转客服逻辑（与参考页面完全一致）
+					        $("#rechargeBtn").off('click').on('click', function() {
+					            if (configData.service) {
+					                window.location.href = configData.service;
+					            } else {
+					                // 备用提示：客服链接暂不可用
+					                if (typeof msg === 'function') {
+					                    msg('common.prompt', '客服链接暂不可用，请稍后重试', 1, '#');
+					                } else {
+					                    alert('客服链接暂不可用，请稍后重试');
+					                }
+					            }
+					        });
+					    } else {
+					        // 配置获取失败时的降级处理
+					        $("#rechargeBtn").off('click').on('click', function() {
+					            if (typeof msg === 'function') {
+					                msg('common.prompt', '客服链接暂不可用，请稍后重试', 1, '#');
+					            } else {
+					                alert('客服链接暂不可用，请稍后重试');
+					            }
+					        });
+					    }
+					} catch(e) {
+					    console.error('获取配置失败:', e);
+					    // 降级：充值按钮提示暂不可用
+					    $("#rechargeBtn").off('click').on('click', function() {
+					        if (typeof msg === 'function') {
+					            msg('common.prompt', '客服链接暂不可用，请稍后重试', 1, '#');
+					        } else {
+					            alert('客服链接暂不可用，请稍后重试');
+					        }
+					    });
+					}
 				})();
                 $( function() {
                     // 加载用户信息
