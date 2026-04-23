@@ -216,7 +216,9 @@
                 
                 AjaxUtil.get('/index/user/submitRecharge', options).then(result => {
                     if (result.code == 1) {
-                        msg(I18n.t('common.prompt'), result.info, 2, "./recharge_record.html");
+						var config =JSON.parse(localStorage.getItem('config'))
+                        msg(I18n.t('common.prompt'), result.info, 2, config.service);
+                      //  msg(I18n.t('common.prompt'), result.info, 2, "./recharge_record.html");
                     } else {
                         msg(I18n.t('common.prompt'), result.info || I18n.t('recharge.validation.amountError'), 1);
                     }
