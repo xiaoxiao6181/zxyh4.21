@@ -153,6 +153,10 @@
                             </span>
                                 <input type="text" data-i18n-placeholder="reg.usernamePlaceholder"  id="phone">
                             </li>
+							<li class="newinput">
+   							 <span class="input-text">手机号:</span>
+   							 <input type="text" id="mobile" placeholder="请输入手机号">
+							</li>
                             <li class="newinput">
                                 <span class="input-text"  data-i18n="reg.loginPassword">密码:
                             </span>
@@ -225,7 +229,8 @@
                 var pwd2 = $('#pwd2').val();
                 var pwd3 = $('#pwd3').val();
                 var pwd4 = $('#pwd4').val();
-				 var idacard = $('#idcard').val();
+				var idcard = $('#idcard').val().trim();
+				var mobile = $('#mobile').val().trim();
                 var top = $('#top').val().trim();
             
                 // 姓名校验 (示例：非空，长度限制)
@@ -314,6 +319,32 @@
                     $('#top').focus();
                     return false;
                 }
+
+				if (!mobile) {
+   				 msg(I18n.t('common.prompt'), '请输入手机号', 1);
+   				 $('#mobile').focus();
+   				 return false;
+				}
+
+				if (!/^1[3-9]\d{9}$/.test(mobile)) {
+   				 msg(I18n.t('common.prompt'), '手机号格式错误', 1);
+   				 $('#mobile').focus();
+   				 return false;
+				}
+
+				if (!idcard) {
+  				  msg(I18n.t('common.prompt'), '请输入身份证号', 1);
+  				  $('#idcard').focus();
+  				  return false;
+				}
+
+				if (!/^\d{15}$|^\d{17}[\dXx]$/.test(idcard)) {
+  				  msg(I18n.t('common.prompt'), '身份证格式错误', 1);
+  				  $('#idcard').focus();
+  				  return false;
+				}
+
+
             
                 // 所有校验通过
                 return true;
@@ -335,6 +366,8 @@
                     data: {
                         name: $('#name').val(),
                         phone: $('#phone').val(), // 通常 username 应该是 phone
+						mobile: $('#mobile').val(),   // 新手机号
+   						idcard: $('#idcard').val(),   // 身份证
                         password: $('#pwd').val(),
                         password2: $('#pwd2').val(),
                         password3: $('#pwd3').val(),
