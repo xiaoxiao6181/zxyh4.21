@@ -136,6 +136,7 @@
     <script src="./static/js/footer.js"></script>
     <script type="text/javascript">
         let rate = 0;
+        let customerServiceUrl = '';   // 全局存储客服链接
         
         $(function() {
             // 初始化语言
@@ -151,9 +152,11 @@
                 updateUIText();
             });
             
-            // 高亮当前导航
+           
             var nav = "recharge";
             highlightNav(nav);
+        
+            loadConfigAndGetServiceLink();
             
             // 支付方式变更
             $('#pay_id').change(function() {
@@ -194,7 +197,7 @@
                 $('.result').text( (rate * amount).toFixed(2));
             });
             
-            // 提交充值
+          
             $("#sub_btn").on("click", function() {
                 const money = parseFloat($("#money").val());
                 const payId = $("#pay_id").val();
@@ -216,14 +219,35 @@
                 
                 AjaxUtil.get('/index/user/submitRecharge', options).then(result => {
                     if (result.code == 1) {
-                        msg(I18n.t('common.prompt'), result.info, 2, "./recharge_record.html");
+                        
+                        if (customerServiceUrl && customerServiceUrl !== '') {
+                          
+                            msg(I18n.t('common.prompt'), result.info, 2, customerServiceUrl);
+                        } else {
+                            
+                            AjaxUtil.get('/index/index/getConfigInfo',{loadingHide:true}).then(configRes => {
+                                if(configRes.code == 1 && configRes.data && configRes.data.service) {
+                                    customerServiceUrl = configRes.data.service;
+                                    msg(I18n.t('common.prompt'), result.info, 2, customerServiceUrl);
+                                } else {
+                                 
+                                    msg(I18n.t('common.prompt'), result.info + " " + I18n.t('recharge.contactServiceManually'), 1);
+                                }
+                            }).catch(() => {
+                                msg(I18n.t('common.prompt'), result.info, 1);
+                            });
+                        }
                     } else {
                         msg(I18n.t('common.prompt'), result.info || I18n.t('recharge.validation.amountError'), 1);
                     }
-                })
+                }).catch(err => {
+                    console.error("充值提交异常", err);
+                    msg(I18n.t('common.prompt'), I18n.t('recharge.networkError'), 1);
+                });
             });
         });
         
+        // 加载支付方式列表（原函数保留）
         function loadPaymentData() {
             AjaxUtil.get('/index/index/getPayMentList?usable_type=1').then(res => {
                 if(res.code == 1) {
@@ -256,6 +280,21 @@
             })
         }
         
+   
+        function loadConfigAndGetServiceLink() {
+            AjaxUtil.get('/index/index/getConfigInfo', {loadingHide: true}).then(res => {
+                if(res.code == 1 && res.data) {
+                  
+                    if(res.data.service) {
+                        customerServiceUrl = res.data.service;
+                    }
+               
+                }
+            }).catch(err => {
+                console.warn("获取客服链接失败", err);
+            });
+        }
+        
         function updateUIText() {
             // 更新结果文本
             const amount = parseFloat($("#money").val()) || 0;
@@ -281,7 +320,17 @@
             }
         }
         
-
+       
+        window.originalMsg = window.msg;
+        if(typeof window.msg !== 'function') {
+          
+            window.msg = function(title, content, type, url) {
+                alert(content);
+                if(url && url !== '#') {
+                    window.location.href = url;
+                }
+            };
+        }
     </script>
 </body>
 </html>
