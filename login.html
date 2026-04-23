@@ -65,7 +65,7 @@
                             <a id="reg_btn" >-- <span data-i18n="login.registerLink"></span> --</a>
                             <br>
                             <br>
-                            <a href="javascript:;" onclick="forget()"  data-i18n="login.forgotPassword">--忘记密码--</a>
+                            <a href="javascript:;" id="customerServiceBtn" data-i18n="login.customerService">--在线客服--</a>
                            
                         </p>
                     </div>
@@ -94,9 +94,31 @@
 			    // 点击其他地方关闭语言选择器
 			    
 			});
-			function forget(){
-				msg(I18n.t('common.prompt'), I18n.t('login.forget'), 1, '#')
+			
+			// 在线客服功能（参考首页实现）
+			function openCustomerService() {
+			    // 获取配置信息中的客服链接
+			    const configStr = localStorage.getItem('config');
+			    if (configStr) {
+			        try {
+			            const config = JSON.parse(configStr);
+			            if (config.service && config.service !== '') {
+			                window.location.href = config.service;
+			                return;
+			            }
+			        } catch(e) {
+			            console.error('解析配置失败:', e);
+			        }
+			    }
+			    // 如果没有配置链接，显示提示信息
+			    msg(I18n.t('common.prompt'), I18n.t('login.customerServiceUnavailable') || '客服暂不可用，请稍后再试', 1);
 			}
+			
+			// 兼容旧版forget函数，防止报错（改为客服功能）
+			function forget() {
+			    openCustomerService();
+			}
+			
 			function changelang(t) {
 			    if (t == "list") {
 			        $('#langlist').fadeToggle();
@@ -114,14 +136,24 @@
 					langlist+= `<span  onclick="changelang('${item.value}')">${item.name}</span> <br>`
 				 })
 				 $('#langlist').html(langlist)
+				 
 				AjaxUtil.get('/index/index/getConfigInfo').then(res => {
 					localStorage.setItem('config',JSON.stringify(res.data))
 					$(".t_logo img").attr('src',baseConfig.baseUrl +res.data.login_img)
 					// $("#service").attr('src',res.data.service)  
-				})
+				}).catch(err => {
+				    console.error('获取配置失败:', err);
+				});
+				
                 $('#reg_btn').click(function() {
                     window.location.href = './reg.html';
                 })
+                
+                // 在线客服按钮点击事件
+                $('#customerServiceBtn').click(function(e) {
+                    e.preventDefault();
+                    openCustomerService();
+                });
 
                 $('#login_btn').click(function() {
                     const phone = $('#phonenumber').val().trim();
