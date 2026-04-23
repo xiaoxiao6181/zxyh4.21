@@ -60,6 +60,11 @@ function hold_order_list() {
     // })
 }
 
+function formatMoney(num) {
+    if (num === null || num === undefined || num === '') return '0.00';
+    return parseFloat(num).toFixed(2);
+}
+
 function get_price() {
 	//$.get('/index/index/product');
 	
@@ -111,7 +116,7 @@ function show_order_list() {
             _end_time = 0;
         };
         //console.log(k,v);
-		var closeprice = (getRandomInt(-v.loss*v.fee*0.01,v.profit*v.fee*0.01)).toFixed(2)
+		var closeprice = formatMoney(getRandomInt(-v.loss*v.fee*0.01,v.profit*v.fee*0.01))
 		
         if (_end_time >= 0) {
             var chaprice = newprice - v.buyprice;
@@ -282,11 +287,11 @@ function setolist(types) {
 			
 			    if (v.is_win == 1) {
 			        //closeprice = +(v.fee * v.endloss) / 100;
-			        closeprice="+"+v.ploss.toFixed(3);
+			        closeprice = "+" + formatMoney(v.ploss);
 			        
 			    } else if (v.is_win == 2) {
 			        // closeprice = v.fee*(-1);
-			        closeprice=v.ploss.toFixed(3);
+			        closeprice = formatMoney(v.ploss);
 			        //closeprice = -(v.fee * v.lossrate)/ 100;
 			        
 			        
@@ -378,7 +383,7 @@ function get_hold_order(oid) {
             $('.order-modal-content .fdds').html(accSubtr(data.buyprice,data.sellprice));
         }
          $('.order-modal-content .ykbl').html(data.endloss/data.fee*100+'%');
-        $('.order-modal-content .ploss').html(data.ploss);
+        $('.order-modal-content .ploss').html(formatMoney(data.ploss));
         $('.order-modal-content .buytime').html(getLocalTime(data.buytime));
         $('.order-modal-content .selltime').html(getLocalTime(data.selltime));
         if (data.ploss < 0) {
