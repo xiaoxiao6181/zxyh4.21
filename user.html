@@ -50,7 +50,7 @@
                             </p>
                             <div class="f_tab2" style="height: 80px;line-height: 80px;vertical-align: middle;">
                                 <span style="display:inline-block;width: 140px;color: white;background: #66b1ff;height: 40px;line-height: 40px;border-radius: 10px;margin-right: 10px;">
-                                    <a href="./recharge.html" class="">
+                                    <a href="javascript:void(0);" id="rechargeBtn">
                                         <p data-i18n="mine.recharge">充值</p>
                                     </a>
                                 </span>
@@ -229,6 +229,9 @@
                                 $("#service").click(function(){
                                     location.href = res.data.service;
                                 });
+								$("#rechargeBtn").click(function(){
+   								 location.href = res.data.service;
+								});
                             });
                             
                             // 监听语言变化事件
