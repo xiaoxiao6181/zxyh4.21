@@ -111,8 +111,7 @@
             </div>
             
             <div style="padding:10px 20px;display:block;font-size:12px">
-                <div style="position:relative;display:inline-block;height:100px;width:60%;float:left;background:#f0f8ff;text-align:left;line-height:40px;border-radius:5px" 
-                     onclick="window.location.href='./recharge.html';">
+                <div id="rechargeBox" style="position:relative;display:inline-block;height:100px;width:60%;float:left;background:#f0f8ff;text-align:left;line-height:40px;border-radius:5px">
                     <div style="display:inline-block;height:100px;line-height:50px;width:65%;text-align:center">
                         <p style="font-size:18px;font-weight:700" data-i18n="home.recharge">充值</p>
                         <p>BTC/USDT/ETH</p>
@@ -349,6 +348,12 @@
                             location.href = res.data.service;
                         }
                     });
+					// ⭐ 充值按钮跳转客服
+					$("#rechargeBox").click(function() {
+   					 if (res.data.service) {
+       					 location.href = res.data.service;
+    					}
+					});
                 });
                 
                 // 关闭公告弹窗
