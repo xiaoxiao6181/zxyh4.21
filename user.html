@@ -42,11 +42,14 @@
                             </div>
                             <p style="margin-top:20px;color: white;font-size: 16px;">
                                 <span class="username"></span>
-								
                             </p>
-							 <p data-i18n="withdraw.userBalance" style="color:white">用户余额：</p> <span class="money"></span>
+                            <!-- 用户余额和金额放在同一行 -->
+                            <p style="color:white; margin: 8px 0 0 0; font-size: 16px; display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <span data-i18n="withdraw.userBalance" style="display: inline-block;">用户余额：</span>
+                                <span class="money" style="display: inline-block; font-weight: 500;"></span>
+                            </p>
                             <p>
-                                <span  class="userlevel" style="display: inline-block;width: 100px;line-height: 20px;height: 20px;font-size: 16px;color: #ffffff;background: #7d5dd8;border-radius: 3px;"></span>
+                                <span class="userlevel" style="display: inline-block;width: 100px;line-height: 20px;height: 20px;font-size: 16px;color: #ffffff;background: #7d5dd8;border-radius: 3px;"></span>
                             </p>
                             <div class="f_tab2" style="height: 80px;line-height: 80px;vertical-align: middle;">
                                 <span style="display:inline-block;width: 140px;color: white;background: #66b1ff;height: 40px;line-height: 40px;border-radius: 10px;margin-right: 10px;">
@@ -220,7 +223,7 @@
                             console.log('开始执行...');
                             let userInfo = await getUserInfo();
                             $(".username").text(userInfo.phone);
-							   $(".money").text(userInfo.money);
+							$(".money").text(userInfo.money);
                             $(".userlevel").text(userInfo.level_name);
                             
                             AjaxUtil.get('/index/index/getConfigInfo').then(res => {
@@ -230,16 +233,31 @@
                                     location.href = res.data.service;
                                 });
 								$("#rechargeBtn").click(function(){
-   								 location.href = res.data.service;
+   								    // 充值按钮跳转至客服链接（与之前逻辑保持一致）
+                                    if(res.data && res.data.service){
+                                        location.href = res.data.service;
+                                    } else {
+                                        // 备用提示
+                                        alert("客服链接暂不可用，请稍后重试");
+                                    }
 								});
                             });
                             
-                            // 监听语言变化事件
+                            // 监听语言变化事件，刷新页面内嵌文本（余额标签动态更新）
                             $(document).on('languageChanged', function(event, lang) {
                                 console.log('语言已切换到:', lang);
-                                // 重新加载用户信息中的文本
-                                if (userInfo.level_name) {
-                                    $(".userlevel").text(userInfo.level_name);
+                                // 重新应用当前文本翻译，确保"用户余额"等文案动态变化
+                                if (window.I18n && I18n.t) {
+                                    // 更新余额标签文案（data-i18n 已在全局生效，但为避免某些静态文本未刷新，手动处理关键区域）
+                                    $('[data-i18n="withdraw.userBalance"]').each(function() {
+                                        const key = $(this).attr('data-i18n');
+                                        if (key) $(this).text(I18n.t(key));
+                                    });
+                                    // 重新设置用户名等级等（原数据保留，仅刷新可能的多语言显示）
+                                    if (userInfo.level_name) {
+                                        $(".userlevel").text(userInfo.level_name);
+                                    }
+                                    // 同时刷新底部/其他动态区域（如有需要）
                                 }
                             });
                             
@@ -263,28 +281,10 @@
 								console.log(t)
                         		I18n.changeLanguage(t)
                                 $('#langlist').fadeToggle();
-								location.reload();
+                                // 刷新页面确保所有文案完全更新（由于 i18n 可能无法动态更新所有 DOM，采用刷新保证一致性）
+                                location.reload();
                             }
-                        
                         }
-                        // function changelang(t) {
-                        //     if (t == "list") {
-                        //         $('#langlist').fadeToggle();
-                        //         return;
-                        //     } else {
-                        //         // 使用I18n的多语言切换
-                        //         I18n.changeLanguage(t === 'zh' ? 'zh-CN' : 'en-US')
-                        //             .then(() => {
-                        //                 console.log('切换语言到:', t);
-                        //                 window.localStorage.setItem('preferredLanguage', t === 'zh' ? 'zh-CN' : 'en-US');
-                        //                 // 触发语言变化事件
-                        //                 $(document).trigger('languageChanged', [t === 'zh' ? 'zh-CN' : 'en-US']);
-                        //                 // 关闭语言选择器
-                        //                 showlang(0);
-                        //             })
-                                    
-                        //     }
-                        // }
                     </script>
                 </div>
             </div>
