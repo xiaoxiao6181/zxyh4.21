@@ -57,7 +57,7 @@
                         <span>
                             <i style="color: black;font-size: .48rem;" data-i18n="recharge.title">充值</i>
                         </span>
-						<span data-i18n="recharge.record" style="font-size: 12px;flex:none;color: black;" onClick='location.href="./recharge_record.html"'>记录</span>
+						<span  data-i18n="recharge.record"  style="font-size: 12px;flex:none;color: black;" onClick='location.href="./recharge_record.html"'>记录</span>
                     </div>
                     <div class="t_con_pay">
                         <div class="t_money" style="display: flex;">
@@ -96,7 +96,7 @@
                                            placeholder="请输入充值金额">
                                 </li>
                                 <li>
-                                    <span style="color: #FF6A00;margin:0 .2rem;width: 80px;display: flex;width: 100%;">
+                                    <span  style="color: #FF6A00;margin:0 .2rem;width: 80px;display: flex;width: 100%;">
                                         <div style="width: auto;" data-i18n="recharge.actualAmount">实际到账</div>≈ <div style="width: auto;" class="result"></div> 
                                     </span>
                                 </li>
@@ -122,11 +122,12 @@
             <p class="title" data-i18n="common.prompt">温馨提示</p>
             <p class="stitle contents"></p>
             <div id="msgBtn">
-                <div class="confirm guanbi" style="background-color:#33B497;" data-i18n="common.confirm">确认</div>
+                <div class="confirm guanbi" data-i18n="common.confirm">确定</div>
             </div>
         </div>
     </div>
     
+    <!-- 添加i18n.js -->
     <script src="./static/js/i18n.js"></script>
     <script src="./static/js/jquery-1.9.1.min.js"></script>
     <script src="./static/js/ajaxUtil.js"></script>
@@ -135,7 +136,6 @@
     <script src="./static/js/footer.js"></script>
     <script type="text/javascript">
         let rate = 0;
-        let customerServiceUrl = '';
         
         $(function() {
             // 初始化语言
@@ -154,9 +154,6 @@
             // 高亮当前导航
             var nav = "recharge";
             highlightNav(nav);
-            
-            // 加载客服链接
-            loadConfigAndGetServiceLink();
             
             // 支付方式变更
             $('#pay_id').change(function() {
@@ -193,26 +190,24 @@
             // 金额输入变化
             $("#money").on('input', function() {
                 const amount = parseFloat($(this).val()) || 0;
-                $('.result').text((rate * amount).toFixed(2));
+				console.log(amount,I18n.t('recharge.actualAmount') + '≈' + (rate * amount).toFixed(2))
+                $('.result').text( (rate * amount).toFixed(2));
             });
             
-            // 提交充值 - 成功后跳转客服
+            // 提交充值
             $("#sub_btn").on("click", function() {
                 const money = parseFloat($("#money").val());
                 const payId = $("#pay_id").val();
                 
                 if(!payId) {
-                    showMsg(I18n.t('common.prompt'), I18n.t('recharge.validation.selectPaymentMethod'), 1);
+                    msg(I18n.t('common.prompt'), I18n.t('recharge.validation.selectPaymentMethod'), 1);
                     return false;
                 }
                 
                 if(!money || isNaN(money) || money <= 0) {
-                    showMsg(I18n.t('common.prompt'), I18n.t('recharge.validation.enterAmount'), 1);
+                    msg(I18n.t('common.prompt'), I18n.t('recharge.validation.enterAmount'), 1);
                     return false;
                 }
-                
-                // 禁用按钮，防止重复提交
-                $("#sub_btn").prop('disabled', true).text(I18n.t('recharge.submitting') || '提交中...');
                 
                 const options = {
                     money: money.toFixed(2),
@@ -221,36 +216,14 @@
                 
                 AjaxUtil.get('/index/user/submitRecharge', options).then(result => {
                     if (result.code == 1) {
-                        // 充值申请成功，跳转到客服
-                        if (customerServiceUrl && customerServiceUrl !== '') {
-                            showMsgAndRedirect(I18n.t('common.prompt'), result.info, customerServiceUrl);
-                        } else {
-                            // 如果没有客服链接，重新获取一次
-                            AjaxUtil.get('/index/index/getConfigInfo', {loadingHide: true}).then(configRes => {
-                                if(configRes.code == 1 && configRes.data && configRes.data.service) {
-                                    customerServiceUrl = configRes.data.service;
-                                    showMsgAndRedirect(I18n.t('common.prompt'), result.info, customerServiceUrl);
-                                } else {
-                                    // 降级：提示成功，跳转到记录页
-                                    showMsgAndRedirect(I18n.t('common.prompt'), result.info, "./recharge_record.html");
-                                }
-                            }).catch(() => {
-                                showMsgAndRedirect(I18n.t('common.prompt'), result.info, "./recharge_record.html");
-                            });
-                        }
+                        msg(I18n.t('common.prompt'), result.info, 2, "./recharge_record.html");
                     } else {
-                        showMsg(I18n.t('common.prompt'), result.info || I18n.t('recharge.validation.amountError'), 1);
-                        $("#sub_btn").prop('disabled', false).text(I18n.t('recharge.rechargeButton') || '充值');
+                        msg(I18n.t('common.prompt'), result.info || I18n.t('recharge.validation.amountError'), 1);
                     }
-                }).catch(err => {
-                    console.error("充值提交异常", err);
-                    showMsg(I18n.t('common.prompt'), I18n.t('recharge.networkError') || '网络错误，请重试', 1);
-                    $("#sub_btn").prop('disabled', false).text(I18n.t('recharge.rechargeButton') || '充值');
-                });
+                })
             });
         });
         
-        // 加载支付方式
         function loadPaymentData() {
             AjaxUtil.get('/index/index/getPayMentList?usable_type=1').then(res => {
                 if(res.code == 1) {
@@ -276,24 +249,15 @@
                             $(".usdt").hide();
                         }
                         
+                        // 触发change事件以更新显示
                         $('#pay_id').trigger('change');
                     }
                 }
             })
         }
         
-        // 加载客服链接
-        function loadConfigAndGetServiceLink() {
-            AjaxUtil.get('/index/index/getConfigInfo', {loadingHide: true}).then(res => {
-                if(res.code == 1 && res.data && res.data.service) {
-                    customerServiceUrl = res.data.service;
-                }
-            }).catch(err => {
-                console.warn("获取客服链接失败", err);
-            });
-        }
-        
         function updateUIText() {
+            // 更新结果文本
             const amount = parseFloat($("#money").val()) || 0;
             $('.result').text((rate * amount).toFixed(2));
         }
@@ -317,47 +281,7 @@
             }
         }
         
-        // 普通提示弹窗（无跳转）
-        function showMsg(title, content, type) {
-            $('.tipMask .title').text(title);
-            $('.tipMask .contents').text(content);
-            $('.tipMask').removeClass('hide');
-            
-            // 绑定确认按钮事件
-            $('.tipMask .guanbi').off('click').on('click', function() {
-                $('.tipMask').addClass('hide');
-                if(type === 2) {
-                    // 如果有需要执行的回调
-                }
-            });
-        }
-        
-        // 提示后跳转（充值成功专用）
-        function showMsgAndRedirect(title, content, redirectUrl) {
-            $('.tipMask .title').text(title);
-            $('.tipMask .contents').text(content);
-            $('.tipMask').removeClass('hide');
-            
-            // 绑定确认按钮事件 - 点击后跳转
-            $('.tipMask .guanbi').off('click').on('click', function() {
-                $('.tipMask').addClass('hide');
-                if(redirectUrl && redirectUrl !== '#') {
-                    window.location.href = redirectUrl;
-                }
-            });
-            
-            // 同时恢复按钮状态（但页面即将跳转，恢复与否影响不大）
-            $("#sub_btn").prop('disabled', false).text(I18n.t('recharge.rechargeButton') || '充值');
-        }
-        
-        // 覆盖全局msg函数，确保兼容性
-        window.msg = function(title, content, type, url) {
-            if(url && url !== '#') {
-                showMsgAndRedirect(title, content, url);
-            } else {
-                showMsg(title, content, type);
-            }
-        };
+
     </script>
 </body>
 </html>
