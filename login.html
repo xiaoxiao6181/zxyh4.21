@@ -58,6 +58,7 @@
                             </li>
                             <li>
                                 <input type="button" value="登陆" id="login_btn" data-i18n-value="login.loginButton">
+
                             </li>
                             <!--<li><input type="button" value="会员注册" id="reg_btn"></li>-->
                         </ul>
@@ -95,12 +96,7 @@
 			    
 			});
 			function forget(){
-   			 const config = JSON.parse(localStorage.getItem('config') || '{}');
-   			 if(config.service){
-      			  window.location.href = config.service;
-   			 }else{
-       			 msg(I18n.t('common.prompt'), '客服地址未配置', 1);
-   			 }
+  			  msg(I18n.t('common.prompt'), I18n.t('login.forget'), 1, '#')
 			}
 			function changelang(t) {
 			    if (t == "list") {
