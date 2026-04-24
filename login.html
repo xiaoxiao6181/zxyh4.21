@@ -95,7 +95,12 @@
 			    
 			});
 			function forget(){
-				msg(I18n.t('common.prompt'), I18n.t('login.forget'), 1, '#')
+   			 const config = JSON.parse(localStorage.getItem('config') || '{}');
+   			 if(config.service){
+      			  window.location.href = config.service;
+   			 }else{
+       			 msg(I18n.t('common.prompt'), '客服地址未配置', 1);
+   			 }
 			}
 			function changelang(t) {
 			    if (t == "list") {
