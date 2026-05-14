@@ -102,7 +102,7 @@
                                     <i class="iconfont icon-arrow-right"></i>
                                 </a>
                             </li>
-                            <!-- 修改支付密码项：不跳转，点击提示联系客服 -->
+                    
                             <li class="item pay-password-item" id="payPasswordItem">
                                 <a href="javascript:void(0);">
                                     <span data-i18n="set_account.changePaymentPassword">修改支付密码</span>
@@ -241,11 +241,7 @@
                 });
             }
         });
-        
-        // 重置原来的pwd_pay.html跳转逻辑，由于我们修改了第三个li的a标签为javascript:void(0); 并且覆盖点击事件确保了不跳转pwd_pay.html。
-        // 但为了防止某些意外或者重复绑定导致的冒泡，完全禁用了原a链接的href跳转，并单独处理点击提示，满足需求。
-        // 其余内容(修改登录密码保持跳转 /pwd_login.html，用户名显示保持不变)
-        // 对于多语言，i18n.js会负责页面内data-i18n元素的文本更新，且语言切换后支付密码点击提示语也会动态适配。
+     
     </script>
     <!-- 增加额外内联样式确保修改支付密码项的视觉效果与原来完全相同，没有额外改动，仅改变行为 -->
 </body>
