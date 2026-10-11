@@ -73,8 +73,8 @@
     "idCardPlaceholder": "请输入身份证号码",
     "referralCode": "推荐码",
     "referralCodePlaceholder": "邀请码(没有可不填)",
-    "registerButton": "注册登陆",
-    "loginLink": "已有帐户，登陆",
+    "registerButton": "注册登录",
+    "loginLink": "已有帐户，登录",
     "validation": {
 	  "nameRequired": "姓名不能为空。",
 	  "nameLength": "姓名长度必须在2到20个字符之间。",
@@ -106,7 +106,7 @@
     "language": "语言",
     "userMessages": "用户消息",
     "platformNotice": "平台公告",
-    "logout": "退出登陆",
+    "logout": "退出登录",
 	"realMe":"实名认证"
   },
   "inquiries": {
